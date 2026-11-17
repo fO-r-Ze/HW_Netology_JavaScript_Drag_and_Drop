@@ -1,0 +1,545 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #0079bf;
+  padding: 24px;
+  color: #172b4d;
+}
+
+.board {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- Column ---------- */
+.column {
+  flex: 1;
+  min-width: 0;
+  background: #ebecf0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 48px);
+}
+
+.column__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.column__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 60px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.column__footer {
+  margin-top: 8px;
+}
+
+.column__add {
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: #5e6c84;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.column__add:hover {
+  background: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+}
+
+/* ---------- Card ---------- */
+.card {
+  position: relative;
+  background: #fff;
+  border-radius: 4px;
+  padding: 10px 10px 10px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  cursor: grab;
+  word-break: break-word;
+  user-select: none;
+}
+
+.card:hover {
+  background: rgba(9, 30, 66, 0.04);
+}
+
+.card__title {
+  font-weight: 600;
+  padding-right: 52px; /* место под кнопки действий */
+}
+
+.card__description {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #5e6c84;
+  white-space: pre-wrap;
+}
+
+.card__images {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.card__image {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: #f0f0f0;
+}
+
+.card__more {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: rgba(9, 30, 66, 0.08);
+  color: #5e6c84;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.card__checklist {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #5e6c84;
+}
+
+/* Кнопки действий карточки — правый верхний угол */
+.card__actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 2;
+}
+
+.card:hover .card__actions {
+  opacity: 1;
+}
+
+.card__action {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #5e6c84;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.card__action:hover {
+  background: rgba(9, 30, 66, 0.12);
+  color: #172b4d;
+}
+
+.card--dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+
+/* ---------- Placeholder ---------- */
+.placeholder {
+  background: rgba(9, 30, 66, 0.08);
+  border: 1px dashed #a5adba;
+  border-radius: 4px;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 30, 66, 0.54);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 16px;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(9, 30, 66, 0.3);
+  padding: 20px;
+}
+
+.modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.modal__title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal__close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #5e6c84;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal__close:hover {
+  background: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+}
+
+.modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5e6c84;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.field__input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field__input:focus {
+  border-color: #0079bf;
+}
+
+.field__input--description {
+  resize: vertical;
+}
+
+/* Palette */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.palette__swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(9, 30, 66, 0.15);
+}
+
+.palette__swatch--empty {
+  background: #fff;
+  color: #5e6c84;
+  font-size: 14px;
+}
+
+.palette__swatch--active {
+  border-color: #0079bf;
+}
+
+/* Checklist */
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checklist__item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.checklist__checkbox {
+  flex-shrink: 0;
+}
+
+.checklist__text {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  outline: none;
+}
+
+.checklist__text:focus {
+  border-color: #0079bf;
+}
+
+.checklist__remove {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #5e6c84;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.checklist__remove:hover {
+  background: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+}
+
+.checklist__add {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.checklist__add-input {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  outline: none;
+}
+
+.checklist__add-input:focus {
+  border-color: #0079bf;
+}
+
+.checklist__add-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: #0079bf;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.checklist__add-btn:hover {
+  background: #026aa7;
+}
+
+/* Dropzone + Images */
+.dropzone {
+  padding: 18px;
+  border: 2px dashed #c1c7d0;
+  border-radius: 6px;
+  background: #fafbfc;
+  text-align: center;
+  font-size: 13px;
+  color: #5e6c84;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.dropzone:hover,
+.dropzone--over {
+  border-color: #0079bf;
+  background: #e6f2fb;
+}
+
+.images-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.image-preview {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-preview__remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0;
+}
+
+.image-preview__remove:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Footer */
+.modal__footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  background: #fff;
+  color: #172b4d;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #f4f5f7;
+}
+
+.btn--primary {
+  background: #0079bf;
+  border-color: #0079bf;
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: #026aa7;
+}
+
+.btn--danger {
+  background: #eb5a46;
+  border-color: #eb5a46;
+  color: #fff;
+  margin-right: auto;
+}
+
+.btn--danger:hover {
+  background: #d24a36;
+}
+
+.modal__error {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fbe4e2;
+  color: #b04632;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* ---------- Чек-лист на карточке ---------- */
+.card__checklist {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(9, 30, 66, 0.1);
+  cursor: default;
+}
+
+.card__checklist-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5e6c84;
+  margin-bottom: 4px;
+}
+
+.card__checklist-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 2px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card__checklist-checkbox {
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  accent-color: #0079bf;
+  cursor: pointer;
+}
+
+.card__checklist-text {
+  flex: 1;
+  word-break: break-word;
+  transition: color 0.15s;
+}
+
+.card__checklist-item--done .card__checklist-text {
+  color: #97a0af;
+  text-decoration: line-through;
+}
